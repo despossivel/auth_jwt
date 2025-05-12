@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const { sendEmail } = require('../utils/emailService');
+const { sendEmail } = require('./emailService');
 
 const generateTotpSecret = () => {
     const tempSecret = `${process.env.TOTP_SECRET_PREFIX}${Date.now()}_${Math.random().toString(36).substring(2)}`;
