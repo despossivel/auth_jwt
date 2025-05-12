@@ -1,30 +1,17 @@
 const User = require('../models/user');
-
-const sendEmailPlaceholder = async (to, subject, text, html) => {
-    console.log('--- SIMULATING EMAIL SEND ---');
-    console.log(`To: ${to}`);
-    console.log(`Subject: ${subject}`);
-    console.log(`Text: ${text}`);
-    if (html) console.log(`HTML: ${html}`);
-    console.log('--- END SIMULATING EMAIL SEND ---');
-
-    return Promise.resolve();
-};
+const { sendEmail } = require('../utils/emailService');
 
 const generateTotpSecretPlaceholder = () => {
-    const pseudoSecret = `TEMP_SECRET_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+    const pseudoSecret = `${process.env.TOTP_SECRET_PREFIX}${Date.now()}_${Math.random().toString(36).substring(2)}`;
     return {
         base32: pseudoSecret,
         otpauth_url: `otpauth://totp/Auth_APP:user?secret=${pseudoSecret}&issuer=Auth_APP`
     };
 };
 
-const verifyTotpCodePlaceholder = (secret, token) => {
-    return typeof token === 'string' && token.length === 6 && (secret.startsWith(process.env.TOTP_SECRET_PREFIX));
-};
+const verifyTotpCodePlaceholder = (secret, token) => (typeof token === 'string' && token.length === 6 && (secret.startsWith(process.env.TOTP_SECRET_PREFIX)));
 
 const generateQrCodeDataUrlPlaceholder = async (otpauthUrl) => `data:image/png;base64,${Buffer.from(`QR_CODE_FOR:${otpauthUrl}`).toString('base64')}`;
-
 
 const getMfaConfiguration = async (userId) => {
     const user = await User.findById(userId).select('mfaEnabled emailMfaEnabled totpMfaEnabled email').lean();
@@ -85,9 +72,8 @@ const initiateEmailMfaSetup = async (userId) => {
     user.pendingEmailMfaCodeExpires = expires;
     await user.save();
 
-
     try {
-        await sendEmailPlaceholder(
+        await sendEmail(
             user.email,
             'Seu Código de Verificação MFA',
             `Seu código de verificação para configurar o MFA por email é: ${verificationCode}. Este código expira em 10 minutos.`,
