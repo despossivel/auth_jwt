@@ -38,9 +38,28 @@ const enableEmail = async (req, res) => {
 };
 
 const disableMethod = async (req, res) => {
-  const { method } = req.body; 
+  const { method } = req.body;
   try {
     const result = await mfaConfigService.disableMfaMethod(req.user.id, method);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const initiateEmailSetup = async (req, res) => {
+  try {
+    const result = await mfaConfigService.initiateEmailMfaSetup(req.user.id);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const verifyEmailSetup = async (req, res) => {
+  const { verificationCode } = req.body;
+  try {
+    const result = await mfaConfigService.verifyAndEnableEmailMfa(req.user.id, verificationCode);
     res.json(result);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -53,4 +72,6 @@ module.exports = {
   verifyTotp,
   enableEmail,
   disableMethod,
+  initiateEmailSetup, 
+  verifyEmailSetup
 };

@@ -5,7 +5,7 @@ const { generateToken } = require('../config/jwt');
 
 const sendUserEmailMfaCode = async (user) => {
   if (!user.email) {
-    console.error(`User ${user.username} has no email configured for MFA.`);
+    console.error(`O usuário ${user.username} não possui segredo TOTP configurado.`);
     throw new Error('Email não configurado para MFA.');
   }
   const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -34,15 +34,11 @@ const verifyUserEmailMfaCode = async (user, code) => {
 
 const verifyUserTotpMfaCode = async (user, code) => {
   if (!user.totpSecret) {
-    console.warn(`User ${user.username} does not have TOTP secret configured.`);
+    console.warn(`O usuário ${user.username} não possui o segredo TOTP configurado.`);
     return false;
   }
 
-  if (process.env.NODE_ENV !== 'production') {
-    console.warn('SECURITY WARNING: TOTP verification is using a placeholder and is NOT secure.');
-  }
-
-  return typeof code === 'string' && code.length === 6 && user.totpSecret.startsWith('VALID_SECRET_FOR_CODE_');
+  return typeof code === 'string' && code.length === 6 && user.totpSecret.startsWith(process.env.TOTP_SECRET_PREFIX);
 };
 
 

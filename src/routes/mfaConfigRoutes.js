@@ -11,5 +11,7 @@ router.post('/configure/totp/initiate', mfaConfigController.initiateTotp);
 router.post('/configure/totp/verify', mfaConfigController.verifyTotp);
 router.post('/configure/email/enable', mfaConfigController.enableEmail);
 router.post('/configure/disable', mfaConfigController.disableMethod);
+router.post('/configure/email/initiate', mfaConfigController.initiateEmailSetup);
+router.post('/configure/email/verify', mfaConfigController.verifyEmailSetup);
 
 module.exports = router;
