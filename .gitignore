@@ -11,3 +11,4 @@ sdk/.env
 sdk/yarn-error.log
 sdk/yarn.lock
 .vercel
+.env

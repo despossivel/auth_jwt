@@ -4,6 +4,7 @@ const errorMiddleware = require('./src/middlewares/errorMiddleware');
 const connectDB = require('./src/config/db');
 const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
+const mfaConfigRoutes = require('./src/routes/mfaConfigRoutes');
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -21,6 +22,7 @@ app.use(errorMiddleware);
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
+app.use('/mfa', mfaConfigRoutes);
 app.get('/protected', authMiddleware, (req, res) => res.json({
   message: 'Acesso autorizado',
   user: req.user,
