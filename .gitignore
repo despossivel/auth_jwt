@@ -1,0 +1,13 @@
+.docker/dbdata
+.history/
+/themes/
+
+yarn.lock
+node_modules/
+
+sdk/node_modules/
+sdk/dist/
+sdk/.env
+sdk/yarn-error.log
+sdk/yarn.lock
+.vercel

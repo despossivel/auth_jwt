@@ -1,0 +1,24 @@
+{
+  "name": "auth",
+  "version": "0.0.2",
+  "main": "app.js",
+  "repository": "git@github.com:despossivel/auth.git",
+  "author": "<mattbmoller@gmail.com>",
+  "scripts": {
+    "dev": "node --env-file .env --watch app.js",
+    "start": "node --env-file app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "sdk": "^0.0.1"
+  }
+}
