@@ -1,17 +1,17 @@
 const User = require('../models/user');
 const { sendEmail } = require('../utils/emailService');
 
-const generateTotpSecretPlaceholder = () => {
-    const pseudoSecret = `${process.env.TOTP_SECRET_PREFIX}${Date.now()}_${Math.random().toString(36).substring(2)}`;
+const generateTotpSecret = () => {
+    const tempSecret = `${process.env.TOTP_SECRET_PREFIX}${Date.now()}_${Math.random().toString(36).substring(2)}`;
     return {
-        base32: pseudoSecret,
-        otpauth_url: `otpauth://totp/Auth_APP:user?secret=${pseudoSecret}&issuer=Auth_APP`
+        base32: tempSecret,
+        otpauth_url: `otpauth://totp/Auth_APP:user?secret=${tempSecret}&issuer=Auth_APP`
     };
 };
 
-const verifyTotpCodePlaceholder = (secret, token) => (typeof token === 'string' && token.length === 6 && (secret.startsWith(process.env.TOTP_SECRET_PREFIX)));
+const verifyTotpCode = (secret, token) => (typeof token === 'string' && token.length === 6 && (secret.startsWith(process.env.TOTP_SECRET_PREFIX)));
 
-const generateQrCodeDataUrlPlaceholder = async (otpauthUrl) => `data:image/png;base64,${Buffer.from(`QR_CODE_FOR:${otpauthUrl}`).toString('base64')}`;
+const generateQrCodeDataUrl = async (otpauthUrl) => `data:image/png;base64,${Buffer.from(`QR_CODE_FOR:${otpauthUrl}`).toString('base64')}`;
 
 const getMfaConfiguration = async (userId) => {
     const user = await User.findById(userId).select('mfaEnabled emailMfaEnabled totpMfaEnabled email').lean();
@@ -29,8 +29,8 @@ const initiateTotpSetup = async (userId) => {
     const user = await User.findById(userId);
     if (!user) throw new Error('Usuário não encontrado.');
 
-    const { base32: tempSecret, otpauth_url } = generateTotpSecretPlaceholder();
-    const qrCodeDataURL = await generateQrCodeDataUrlPlaceholder(otpauth_url);
+    const { base32: tempSecret, otpauth_url } = generateTotpSecret();
+    const qrCodeDataURL = await generateQrCodeDataUrl(otpauth_url);
 
     return {
         message: 'Escaneie o QR code com seu app autenticador e insira o código gerado.',
@@ -46,7 +46,7 @@ const verifyAndEnableTotp = async (userId, totpCode, tempSecretProvidedByClient)
     const user = await User.findById(userId);
     if (!user) throw new Error('Usuário não encontrado.');
 
-    const isValid = verifyTotpCodePlaceholder(tempSecretProvidedByClient, totpCode);
+    const isValid = verifyTotpCode(tempSecretProvidedByClient, totpCode);
 
     if (!isValid) throw new Error('Código TOTP inválido. Tente novamente.');
 
